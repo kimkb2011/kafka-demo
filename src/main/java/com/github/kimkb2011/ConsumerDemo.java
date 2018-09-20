@@ -2,10 +2,11 @@ package com.github.kimkb2011;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
@@ -34,7 +35,12 @@ public class ConsumerDemo {
 
         // poll for new data
         while (true) {
-            consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
+            ConsumerRecords<String, String> records = consumer.poll(
+                    Duration.ofMillis(100)); // new in Kafka 2.0.0
+            for (ConsumerRecord<String, String> record : records) {
+                logger.info("Key: " + record.key() + ", Value: " + record.value());
+                logger.info("Partition: " + record.partition() + ", Offset: " + record.offset());
+            }
         }
     }
 }
